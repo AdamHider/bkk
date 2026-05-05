@@ -1,8 +1,8 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-toolbar-title> Bikeka </q-toolbar-title>
+    <q-header>
+      <q-toolbar class="bg-white text-primary">
+        <q-toolbar-title> <b>Bikeka</b> </q-toolbar-title>
         <q-avatar size="40px">
            <img src="https://cdn.quasar.dev/img/avatar.png">
         </q-avatar>
