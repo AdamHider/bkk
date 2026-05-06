@@ -2,17 +2,19 @@
   <q-page class="bg-grey-1 q-pa-md">
     <div class="row items-center justify-between no-wrap q-mb-md">
       <div>
-        <div class="text-h6 text-weight-bold">Активные</div>
+        <div class="text-h6 text-weight-bold">Активные навыки
+          <q-chip round color="primary" text-color="white" size="sm">{{ skills.in_progress.length }}</q-chip>
+        </div>
         <div class="text-caption text-grey-7">Навыки, которые мы изучаем. Чтобы добавить навык, нажмите на "+"</div>
       </div>
-      <q-btn 
-        unelevated 
-        round 
+      <q-btn
+        unelevated
+        round
         outline
         class="q-mx-sm"
-        color="primary" 
-        icon="add" 
-        @click="openUnmasteredList" 
+        color="primary"
+        icon="add"
+        @click="openUnmasteredList"
       />
     </div>
 
@@ -20,51 +22,60 @@
       <q-spinner-dots size="50px" color="primary" />
     </q-inner-loading>
 
-    <q-list v-if="skills.in_progress.length" bordered separator class="bg-white rounded-borders shadow-1">
-      <q-item 
-        v-for="skill in skills.in_progress" 
-        :key="skill.id" 
-        clickable 
-        v-ripple 
+    <q-list v-if="skills.in_progress.length"  >
+      <q-item
+        v-for="skill in skills.in_progress"
+        :key="skill.id"
+        clickable
+        v-ripple
         @click="openDetails(skill)"
+        class="bg-white shadow-1 q-mb-sm q-py-md rounded-borders"
       >
+        <q-item-section avatar>
+          <q-avatar :color="`${skill.category.color}-1`" :text-color="`${skill.category.color}-7`"  :icon="skill.category.icon">
+            <q-badge floating rounded style="top: unset; bottom: -7px; font-family: Times New Roman;"
+              :color="['green-4', 'orange-4', 'red-4', 'purple-4'][skill.level - 1]"
+              text-color="white"
+              :label="['I', 'II', 'III', 'IV'][skill.level - 1]"/>
+          </q-avatar>
+
+        </q-item-section>
         <q-item-section>
           <q-item-label class="text-weight-bold">{{ skill.title }}</q-item-label>
-          <q-item-label caption class="text-primary text-uppercase text-caption">
-            {{ skill.domain }} • Уровень {{ skill.level }}
-          </q-item-label>
+          <q-item-label caption>{{ skill.category.title }} </q-item-label>
         </q-item-section>
-        
+
         <q-item-section side>
-          <div class="row items-center">
-            <q-badge 
-              :label="getProgressLabel(skill)" 
-              color="blue-1" 
-              text-color="primary" 
-              class="q-mr-sm"
-            />
-            <q-icon name="chevron_right" color="grey-4" />
-          </div>
+          <q-circular-progress
+            show-value
+            rounded
+            font-size="10px"
+            :value="skill.progress.percentage"
+            size="40px"
+            :thickness="0.2"
+            color="primary"
+            track-color="grey-3"
+            class="text-primary text-weight-bold"
+          >
+            {{ skill.progress.label }}
+          </q-circular-progress>
         </q-item-section>
       </q-item>
     </q-list>
 
-    <!-- Заглушка, если пусто -->
     <div v-else-if="!isLoading" class="text-center q-pa-xl text-grey-5">
       <q-icon name="auto_awesome" size="64px" class="q-mb-md" />
       <div class="text-h6">Пока нет активных задач</div>
       <p>Нажмите «Новый навык», чтобы выбрать цель</p>
     </div>
 
-    <!-- 1. Диалог списка всех неизученных навыков -->
     <UnmasteredSkillsDialog
       v-model="unmasteredDialogVisible"
       :skills="skills.not_started"
-      @select-skill="openDetails"
+      @select-skill="(skill, status) => handleStatusChange(status, skill.id)"
       @update-status="handleStatusChange"
     />
 
-    <!-- 2. Универсальный диалог деталей навыка (карточка) -->
     <SkillDetailsDialog
       v-model="detailsDialogVisible"
       :skill="selectedSkill"
@@ -121,22 +132,36 @@ const openDetails = (skill) => {
   selectedSkill.value = skill
   detailsDialogVisible.value = true
 }
+const handleStatusChange = async (newStatus, explicitSkillId = null) => {
+  const targetSkillId = explicitSkillId || selectedSkill.value?.id
 
-const handleStatusChange = async (newStatus) => {
+  if (!targetSkillId) {
+    console.error("Skill ID not found")
+    return
+  }
+
   try {
-    await updateStatus(childId, selectedSkill.value.id, newStatus)
-    
+    await updateStatus(childId, targetSkillId, newStatus)
+
     // Закрываем окна
     detailsDialogVisible.value = false
-    if (newStatus === 'in_progress') unmasteredDialogVisible.value = false
-    
-    // Полное обновление данных с сервера
-    await refreshActive()
-    
-    $q.notify({ 
-      color: 'positive', 
-      icon: 'done', 
-      message: newStatus === 'mastered' ? 'Навык освоен!' : 'Добавлено в работу' 
+
+    // Если мы перевели навык из "неизученных" (в работу или сразу в архив),
+    // обновляем список неизученных и закрываем диалог выбора
+    if (unmasteredDialogVisible.value) {
+      await loadSkills(childId, 'not_started')
+      // Закрываем только если это "В работу" (чтобы не прыгать туда-сюда)
+      // Если нажал "Уже умеет", можно оставить окно открытым для дальнейшего выбора
+      if (newStatus === 'in_progress') unmasteredDialogVisible.value = false
+    }
+
+    // Всегда обновляем список активных на главной
+    await loadSkills(childId, 'in_progress')
+
+    $q.notify({
+      color: 'positive',
+      icon: 'done',
+      message: newStatus === 'mastered' ? 'Навык освоен!' : 'Добавлено в работу'
     })
   } catch (e) {
     $q.notify({ color: 'negative', message: 'Не удалось обновить статус' })
@@ -146,10 +171,10 @@ const handleStatusChange = async (newStatus) => {
 const handleCheck = async (stage) => {
   try {
     await updateStage(childId, stage.id, true)
-    
+
     // Тихое обновление данных
     await loadSkills(childId, 'in_progress')
-    
+
     // Обновляем ссылку на выбранный навык, чтобы диалог перерисовал чекбоксы
     if (selectedSkill.value) {
       selectedSkill.value = skills.value.in_progress.find(s => s.id === selectedSkill.value.id)
@@ -159,13 +184,6 @@ const handleCheck = async (stage) => {
   }
 }
 
-/**
- * Вспомогательные функции для UI
- */
-const getProgressLabel = (skill) => {
-  const done = skill.stages.filter(s => s.is_completed).length
-  return `${done}/${skill.stages.length}`
-}
 
 const getFirstUnfinishedIndex = (skill) => {
   return skill.stages.findIndex(s => !s.is_completed)
@@ -178,9 +196,3 @@ const isAllStagesCompleted = (skill) => {
 onMounted(refreshActive)
 </script>
 
-<style scoped>
-.rounded-borders {
-  border-radius: 12px;
-  overflow: hidden;
-}
-</style>

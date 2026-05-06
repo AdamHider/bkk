@@ -17,7 +17,8 @@ export default defineConfig((/* ctx */) => {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: [
-      'app.scss'
+      'app.scss',
+      'font.scss'
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
@@ -31,7 +32,10 @@ export default defineConfig((/* ctx */) => {
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       //'roboto-font', // optional, you are not bound to it
-      'material-icons', // optional, you are not bound to it
+      'material-icons', // Классические
+      'material-icons-outlined', // Контурные
+      'material-symbols-outlined', // НОВЫЕ (те самые с Google Fonts)
+      'material-symbols-rounded'
     ],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
@@ -93,7 +97,7 @@ export default defineConfig((/* ctx */) => {
 
       // Quasar plugins
       plugins: [
-        'Notify' 
+        'Notify'
       ]
     },
 
