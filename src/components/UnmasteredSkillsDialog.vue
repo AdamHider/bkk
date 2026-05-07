@@ -10,20 +10,21 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
 
-      <q-card-section class="q-px-none">
+      <q-card-section class="column q-px-none" style="height: calc(100% - 50px)">
         <q-input
           v-model="search"
           dense
           outlined
           placeholder="Поиск навыка..."
-          class="q-mb-md q-mx-md"
+          class="q-mx-md"
+          style="flex: 0"
         >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
         </q-input>
 
-        <q-scroll-area style="height: 500px;">
+        <q-scroll-area style="flex: 1">
           <q-list  class="q-pa-md">
             <q-expansion-item
               v-for="skill in filteredSkills"
