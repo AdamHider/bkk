@@ -1,6 +1,6 @@
 <template>
 
-  <q-item class="bg-white shadow-1 q-mb-sm q-py-md rounded-borders">
+  <q-item class="bg-white shadow-10 q-mb-md q-py-md rounded-borders shadow-transition">
     <q-item-section avatar>
       <q-avatar :color="`${props.skill.category.color}-1`" :text-color="`${props.skill.category.color}-7`"  :icon="props.skill.category.icon">
         <q-badge floating rounded style="top: unset; bottom: -7px; font-family: Times New Roman;"

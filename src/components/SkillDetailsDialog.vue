@@ -2,7 +2,7 @@
     <q-dialog v-model="isOpen" transition-show="slide-up" transition-hide="slide-down" maximized="">
       <q-card v-if="skill" style="width: 100%; max-width: 550px; border-radius: 16px;" class="column full-height no-wrap">
         <!-- Шапка с Категорией и Уровнем -->
-        <q-card-section :class="`bg-${skill.category.color}-5 text-white q-pa-md`">
+        <q-card-section :class="`bg-gradient-${skill.category.color} text-white q-pa-md overflow-hidden`">
           <q-item class="q-px-none">
             <q-item-section avatar>
               <q-avatar :color="`${skill.category.color}-4`" :text-color="`${skill.category.color}-1`" :icon="skill.category.icon">
@@ -33,46 +33,40 @@
               rounded
             />
           </div>
-      </q-card-section>
-
-      <!-- КОНТЕНТ ЭТАПА -->
-      <q-card-section class="col q-pa-none">
-
-        <div :class="`bg-${skill.category.color}-5 q-pb-md`">
-          <div class="row no-wrap items-center q-px-md q-pt-sm" style="min-width: 100%;">
+          <div class="row no-wrap items-center q-pt-lg">
             <template v-for="(stage, index) in skill.stages" :key="stage.id">
-              <div 
-                v-if="index > 0" 
+              <div
+                v-if="index > 0"
                 class="step-connector"
                 :class="{ 'done': index <= activeStepIndex }"
               ></div>
 
-              <div 
+              <div
                 class="step-bubble column items-center justify-center cursor-pointer relative-position"
-                :class="{ 
-                  'active': currentStepIndex === index, 
+                :class="{
+                  'active': currentStepIndex === index,
                   'completed': stage.is_completed,
-                  'locked': index > activeStepIndex 
-                }"
-                @click="currentStepIndex = index"
-                v-ripple
-              >
-                <!-- Маленькая точка текущего просмотра -->
-                <div v-if="currentStepIndex === index" class="current-indicator"></div>
+                  'locked': index > activeStepIndex
+                }" @click="currentStepIndex = index" v-ripple>
                 <q-icon v-if="stage.is_completed" name="check" size="18px" />
                 <q-icon v-else-if="index > activeStepIndex" name="lock" size="16px" />
                 <span v-else class="text-weight-bold">{{ index + 1 }}</span>
-                
               </div>
             </template>
-
           </div>
-      </div>
+          <div class="semisphere"></div>
+      </q-card-section>
+
+      <q-card-section class="col q-pa-none">
         <q-tab-panels v-model="currentStepIndex" animated swipeable class="bg-transparent full-height">
           <q-tab-panel v-for="(stage, index) in skill.stages" :name="index" :key="stage.id" class="q-pa-md">
-            <q-card flat class="stage-content-card shadow-1 q-pa-sm">
-              <q-badge v-if="stage.is_completed" color="positive" label="Освоено" rounded/>
-              <div class="text-body1 text-grey-8 q-mb-lg">
+            <q-card flat class="stage-content-card ">
+
+              <div :class="`text-weight-bold q-mb-xs  row items-center text-subtitle1 ${(stage.is_completed) ? 'text-positive': 'text-grey-9'}`" >
+                <q-icon v-if="stage.is_completed" color="positive" name="check_circle" class="q-mr-sm" />
+                Этап {{ index+1 }}
+              </div>
+              <div class="text-grey-8 q-mb-lg">
                 {{ stage.description }}
               </div>
 
@@ -85,11 +79,11 @@
               </div>
 
               <!-- КНОПКА ДЕЙСТВИЯ -->
-              <div class="fixed-bottom q-pa-md bg-grey-1 shadow-up-1">
+              <div>
                 <q-btn
                   v-if="!stage.is_completed && index === activeStepIndex"
                   label="Я научился!"
-                  color="positive"
+                  color="primary"
                   rounded
                   unelevated
                   class="full-width"
@@ -114,7 +108,6 @@
           </q-tab-panels>
         </q-card-section>
 
-        <!-- Финальное действие -->
         <q-card-actions align="center" class="q-pb-lg q-pt-none">
           <q-btn
             v-if="status === 'not_started'"
@@ -187,7 +180,6 @@
   </script>
 
 <style scoped>
-/* Контейнер кружка */
 .step-bubble {
   width: 40px;
   height: 40px;
@@ -195,26 +187,23 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255);
   transition: all 0.3s ease;
   z-index: 2;
 }
 
-/* Состояния кружка */
 .step-bubble.completed {
-  background: #4caf50; /* positive */
+  color: var(--q-primary);
+  background: white;
   border-color: #ffffff;
 }
 
 .step-bubble.active {
   background: white !important;
-  color: var(--q-primary); /* Или цвет категории */
+  color: var(--q-primary);
   transform: scale(1.15);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 .step-bubble.active.completed {
-
-  color: #4caf50; /* positive */
 }
 
 .step-bubble.locked {
@@ -222,31 +211,22 @@
   border-color: transparent;
 }
 
-/* Линия между этапами */
+.step-bubble.active.locked {
+  background: rgba(0, 0, 0, 0.1);
+  color: #868686;
+  border-color: transparent;
+}
+
 .step-connector {
   height: 3px;
   width: 30px;
   min-width: 30px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
 .step-connector.done {
-  background: rgba(255, 255, 255, 0.8);
-}
-
-/* Индикатор под активным кружком */
-.current-indicator {
-  position: absolute;
-  top: -12px;
-  width: 6px;
-  height: 6px;
-  background: white;
-  border-radius: 50%;
-}
-
-.skill-tabs {
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+  background: rgba(255, 255, 255, 1);
+  height: 5px;
 }
 </style>

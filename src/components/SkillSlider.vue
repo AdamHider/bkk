@@ -10,24 +10,23 @@
       <swiper-slide
         v-for="skill in skills"
         :key="skill.id"
-        style="width: 150px;"
+        style="width: 120px;"
       >
-        <q-card
-          class="skill-card bg-white shadow-1 text-center q-pa-sm cursor-pointer"
-          v-ripple
+        <q-card flat
+          class="skill-card bg-transparent text-center q-pa-sm"
         >
           <q-card-section class="q-pa-none flex flex-center">
             <!-- Радиальный прогресс вокруг аватара -->
             <q-circular-progress
               show-value
-              :value="skill.progress.percent"
-              size="86px"
-              :thickness="0.12"
+              rounded
+              :value="skill.progress.percentage"
+              size="76px"
+              :thickness="0.2"
               :color="`${skill.category.color}-5`"
-              track-color="grey-2"
-              class="q-my-sm"
+              :track-color="`${skill.category.color}-1`"
             >
-              <q-avatar size="68px" :color="`${skill.category.color}-1`" :text-color="`${skill.category.color}-7`" :icon="skill.category.icon">
+              <q-avatar size="58px" :color="`${skill.category.color}-2`" :text-color="`${skill.category.color}-7`" :icon="skill.category.icon">
                 <q-badge
                   floating rounded
                   class="level-badge"
@@ -39,11 +38,8 @@
           </q-card-section>
 
           <q-card-section class="q-pa-xs">
-            <div class="skill-title text-weight-bold text-grey-9 ellipsis-2-lines">
+            <div class="text-caption text-weight-bold text-grey-9 ellipsis-2-lines line-h-1">
               {{ skill.title }}
-            </div>
-            <div class="text-caption text-grey-6 ellipsis-2-lines">
-              {{ skill.category.title }}
             </div>
           </q-card-section>
         </q-card>

@@ -1,18 +1,18 @@
 <template>
-  <q-page class="bg-grey-1 q-pa-md">
-    <div class="row items-center justify-between no-wrap q-mb-md">
+  <q-page class="bg-main-primary q-pa-md" style="padding-top: 50px;">
+    <div class="row items-center justify-between no-wrap q-mb-md q-mt-sm text-white">
       <div>
         <div class="text-h6 text-weight-bold">Активные навыки
           <q-chip round color="primary" text-color="white" size="sm">{{ skills.in_progress.length }}</q-chip>
         </div>
-        <div class="text-caption text-grey-7">Навыки, которые мы изучаем. Чтобы добавить навык, нажмите на "+"</div>
+        <div class="text-caption text-pink-1">Навыки, которые мы изучаем. Чтобы добавить навык, нажмите на "+"</div>
       </div>
       <q-btn
-        unelevated
         round
-        outline
-        class="q-mx-sm"
-        color="primary"
+        unelevated
+        class="q-mx-sm  q-push"
+        color="white"
+        text-color="primary"
         icon="add"
         @click="openUnmasteredList"
       />
@@ -29,10 +29,10 @@
         clickable
         v-ripple
         @click="openDetails(skill)"
-        class="bg-white shadow-1 q-mb-sm q-py-md rounded-borders"
+        class="bg-white q-push q-mb-md q-py-md rounded-borders "
       >
         <q-item-section avatar>
-          <q-avatar :color="`${skill.category.color}-1`" :text-color="`${skill.category.color}-7`"  :icon="skill.category.icon">
+          <q-avatar :color="`${skill.category.color}-2`" :text-color="`${skill.category.color}-7`"  :icon="skill.category.icon">
             <q-badge floating rounded style="top: unset; bottom: -7px; font-family: Times New Roman;"
               :color="['green-4', 'orange-4', 'red-4', 'purple-4'][skill.level - 1]"
               text-color="white"
