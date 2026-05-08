@@ -72,7 +72,7 @@
                       class="q-ml-xs"
                     />
                   </div>
-                  <div class="text-caption text-weight-bold text-grey-7">Навыки ({{ child.statistics.comparison.months.current }})</div>
+                  <div class="text-caption text-weight-bold ">Навыки ({{ child.statistics.comparison.months.current }})</div>
                   <div class="text-bold text-blue-grey-3" style="font-size: 10px">
                     было +{{ child.statistics.comparison.skills.last }} ({{ child.statistics.comparison.months.last }})
                   </div>
@@ -92,7 +92,7 @@
                       class="q-ml-xs"
                     />
                   </div>
-                  <div class="text-caption text-weight-bold text-grey-7">Этапы ({{ child.statistics.comparison.months.current }})</div>
+                  <div class="text-caption text-weight-bold ">Этапы ({{ child.statistics.comparison.months.current }})</div>
                   <div class="text-bold text-blue-grey-3" style="font-size: 10px">
                     было +{{ child.statistics.comparison.stages.last }} ({{ child.statistics.comparison.months.last }})
                   </div>
@@ -100,18 +100,19 @@
               </div>
             </div>
 
-            <!-- 2. График (уже вынесен ранее) -->
-            <q-card flat bordered class="rounded-16 q-mb-md">
+            <q-card flat  class="rounded-16 q-mb-md rounded-borders">
+              <q-card-section class="q-pb-none  q-pt-sm text-center">
+                <div><b>Динамика прогресса</b></div>
+              </q-card-section>
               <q-card-section class="q-pa-none">
                 <WeeklyProgressChart
                   :skills-data="child.statistics.weekly.skills"
                   :stages-data="child.statistics.weekly.stages"
-                  height="140"
+                  height="130"
                 />
               </q-card-section>
             </q-card>
 
-            <!-- 3. Анализ категорий -->
             <DomainAnalysis
               :top="child.statistics.domains.top"
               :weak="child.statistics.domains.weak"

@@ -12,9 +12,27 @@
 .q-btn{
     font-weight: bold;
 }
+.shadow-sm{
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+}
+.shadow-md{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+}
+.rounded-none{
+    border-radius: 0;
+}
+.rounded-b-none{
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.rounded-t-lg{
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+}
 
-.q-item.q-push{
-    box-shadow: 0px 0px 0px 4px #93333e36;
+.q-item.q-push, .q-expansion-item.q-push{
+    /*box-shadow: 0px 0px 0px 4px #93333e36;*/
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 .q-card.q-push-light {
     box-shadow: 0px 0px 0px 4px #00000010;

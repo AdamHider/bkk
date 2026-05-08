@@ -31,7 +31,7 @@
               :key="skill.id"
               group="skills"
               header-class="q-py-md"
-              class="bg-white rounded-borders shadow-1 q-mb-sm"
+              class="bg-white rounded-borders q-push q-mb-md"
             >
               <template v-slot:header>
 
@@ -66,7 +66,8 @@
                   <q-btn
                     unelevated
                     label="Умеем"
-                    color="positive"
+                    color="red-1"
+                    text-color="primary"
                     icon="done_all"
                     @click="handleAction(skill, 'mastered')"
                   />

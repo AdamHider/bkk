@@ -1,18 +1,18 @@
 <template>
-  <q-page class="bg-grey-1 q-pa-md">
-    <div class="row items-center justify-between no-wrap q-mb-md">
-      <div>
+  <q-page class="bg-main-primary q-pa-md" style="padding-top: 50px;">
+    <div class="row items-center justify-between no-wrap q-mb-md q-mt-sm text-white">
+      <div style="text-shadow: 0px 1px 3px #e04c5d;">
         <div class="text-h6 text-weight-bold">Освоенные навыки
           <q-chip round color="primary" text-color="white" size="sm">{{ skills.mastered.length }}</q-chip>
         </div>
-        <div class="text-caption text-grey-7">Навыки, которые мы уже знаем. Чтобы добавить навык, нажмите на "+"</div>
+        <div class="text-caption ">Навыки, которые мы уже знаем. Чтобы добавить навык, нажмите на "+"</div>
       </div>
       <q-btn
-        unelevated
         round
-        outline
-        class="q-mx-sm"
-        color="primary"
+        unelevated
+        class="q-mx-sm  q-push"
+        color="white"
+        text-color="primary"
         icon="add"
         @click="openUnmasteredList"
       />
@@ -29,7 +29,7 @@
         clickable
         v-ripple
         @click="openDetails(skill)"
-        class="bg-white shadow-1 q-mb-sm q-py-md rounded-borders"
+        class="bg-white q-push q-mb-md q-py-md rounded-borders "
       >
         <q-item-section avatar>
           <q-avatar :color="`${skill.category.color}-1`" :text-color="`${skill.category.color}-7`"  :icon="skill.category.icon">
@@ -96,6 +96,7 @@ import { useSkills } from 'src/composables/useSkills'
 // Импорт компонентов
 import SkillDetailsDialog from 'src/components/SkillDetailsDialog.vue'
 import UnmasteredSkillsDialog from 'src/components/UnmasteredSkillsDialog.vue'
+import BubbleBackground from 'src/components/BubbleBackground.vue';
 
 const $q = useQuasar()
 const { skills, loadSkills, updateStatus, updateStage } = useSkills()

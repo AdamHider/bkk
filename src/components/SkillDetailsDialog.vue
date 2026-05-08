@@ -1,11 +1,11 @@
 <template>
     <q-dialog v-model="isOpen" transition-show="slide-up" transition-hide="slide-down" maximized="">
-      <q-card v-if="skill" style="width: 100%; max-width: 550px; border-radius: 16px;" class="column full-height no-wrap">
-        <!-- Шапка с Категорией и Уровнем -->
-        <q-card-section :class="`bg-gradient-${skill.category.color} text-white q-pa-md overflow-hidden`">
-          <q-item class="q-px-none">
+      <div class="column">
+      <q-card v-if="skill" style="width: 100%; padding-bottom: 25px;" :class="`bg-${skill.category.color}-4  overflow-hidden rounded-none`">
+        <q-card-section class="q-pb-sm">
+          <q-item :class="`q-px-sm bg-${skill.category.color}-8 text-white rounded-borders `">
             <q-item-section avatar>
-              <q-avatar :color="`${skill.category.color}-4`" :text-color="`${skill.category.color}-1`" :icon="skill.category.icon">
+              <q-avatar :color="`${skill.category.color}-6`" :text-color="`${skill.category.color}-1`" :icon="skill.category.icon">
               </q-avatar>
             </q-item-section>
             <q-item-section>
@@ -13,76 +13,75 @@
               <q-item-label caption class="text-white">Уровень {{ skill.level }} </q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-btn dense flat icon="close" v-close-popup text-color="white" class="absolute-top-right q-ma-xs" />
+              <q-btn dense flat icon="close" v-close-popup text-color="white" class="" />
             </q-item-section>
           </q-item>
-          <div class="text-h6 line-height-1 q-mt-sm"><b>{{ skill.title }}</b></div>
-          <div class="q-my-sm">{{ skill.description }}</div>
-          <div class="q-mt-md">
-            <div class="row justify-between items-end q-mb-xs">
-              <div class="text-caption text-weight-bold">Прогресс освоения</div>
-              <div class="text-caption text-weight-bold">{{ skill.progress.label }}</div>
-            </div>
-            <q-linear-progress
-              :value="skill.progress.percentage/100"
-              :color="`${skill.category.color}-2`"
-              track-color="white-3"
-              class="rounded-borders"
-              size="12px"
-              stripe
-              rounded
-            />
-          </div>
-          <div class="row no-wrap items-center q-pt-lg">
-            <template v-for="(stage, index) in skill.stages" :key="stage.id">
-              <div
-                v-if="index > 0"
-                class="step-connector"
-                :class="{ 'done': index <= activeStepIndex }"
-              ></div>
-
-              <div
-                class="step-bubble column items-center justify-center cursor-pointer relative-position"
-                :class="{
-                  'active': currentStepIndex === index,
-                  'completed': stage.is_completed,
-                  'locked': index > activeStepIndex
-                }" @click="currentStepIndex = index" v-ripple>
-                <q-icon v-if="stage.is_completed" name="check" size="18px" />
-                <q-icon v-else-if="index > activeStepIndex" name="lock" size="16px" />
-                <span v-else class="text-weight-bold">{{ index + 1 }}</span>
+          <q-card class="q-ma-sm rounded-borders shadow-sm" style="position: relative; z-index: 1;">
+            <q-card-section>
+              <div :class="`text-subtitle1 line-h-1 text-${skill.category.color}`"><b>{{ skill.title }}</b></div>
+              <div class="q-my-sm text-caption">{{ skill.description }}</div>
+              <div class="row justify-between items-end q-mt-md">
+                <div class="text-caption text-weight-bold">Прогресс освоения</div>
+                <div class="text-caption text-weight-bold">{{ skill.progress.label }}</div>
               </div>
-            </template>
-          </div>
-          <div class="semisphere"></div>
-      </q-card-section>
+              <div class="row no-wrap items-center q-mt-md">
+                <template v-for="(stage, index) in skill.stages" :key="stage.id">
+                  <div
+                    v-if="index > 0"
+                    class="step-connector"
+                    :class="{ 'done': index <= activeStepIndex }"
+                    :style="`--main-color: ${skill.category.colorhex}`"
+                  ></div>
 
+                  <div
+                    class="step-bubble column items-center justify-center cursor-pointer relative-position "
+                    :style="`--main-color: ${skill.category.colorhex}`"
+                    :class="{
+                      'active': currentStepIndex === index,
+                      'completed': stage.is_completed,
+                      'locked': index > activeStepIndex
+                    }"
+                    @click="currentStepIndex = index" v-ripple>
+                    <q-icon v-if="stage.is_completed" name="check" size="18px" />
+                    <q-icon v-else-if="index > activeStepIndex" name="lock" size="16px" />
+                    <span v-else class="text-weight-bold">{{ index + 1 }}</span>
+                  </div>
+                </template>
+              </div>
+            </q-card-section>
+          </q-card>
+      </q-card-section>
+    </q-card>
+    <q-card class="rounded-b-none rounded-t-lg" style="flex: 1; margin-top: -75px;  padding-top: 35px;">
       <q-card-section class="col q-pa-none">
         <q-tab-panels v-model="currentStepIndex" animated swipeable class="bg-transparent full-height">
           <q-tab-panel v-for="(stage, index) in skill.stages" :name="index" :key="stage.id" class="q-pa-md">
             <q-card flat class="stage-content-card ">
 
-              <div :class="`text-weight-bold q-mb-xs  row items-center text-subtitle1 ${(stage.is_completed) ? 'text-positive': 'text-grey-9'}`" >
-                <q-icon v-if="stage.is_completed" color="positive" name="check_circle" class="q-mr-sm" />
-                Этап {{ index+1 }}
+              <q-item class="q-py-none">
+                <q-item-section avatar class="text-center">
+                  <div>
+                    <div :class="`text-h4 text-${skill.category.color}`" style="line-height: 1;"><b>{{ index+1 }}</b></div>
+                    <div class="text-caption"><b>Этап</b></div>
+                  </div>
+                </q-item-section>
+                <q-item-section  class="text-grey-9">
+                  {{ stage.description }}
+                </q-item-section>
+              </q-item>
+              <q-separator class="q-my-md"/>
+              <div :class="`text-weight-bold text-subtitle1 q-mb-xs text-${skill.category.color} row items-center`">
+                <q-icon name="lightbulb" color="warning" class="q-mr-xs" />
+                Как научиться:
               </div>
-              <div class="text-grey-8 q-mb-lg">
-                {{ stage.description }}
-              </div>
+              <div class="text-body2 text-grey-9">{{ stage.instruction }}</div>
 
-              <div :class="`bg-${skill.category.color}-1 q-pa-md rounded-borders q-mb-xl border-dashed`">
-                <div class="text-weight-bold q-mb-xs text-grey-9 row items-center">
-                  <q-icon name="lightbulb" color="warning" class="q-mr-xs" />
-                  Как научиться:
-                </div>
-                <div class="text-body2 text-grey-9">{{ stage.instruction }}</div>
-              </div>
-
+                <q-separator class="q-my-md" />
               <!-- КНОПКА ДЕЙСТВИЯ -->
               <div>
                 <q-btn
                   v-if="!stage.is_completed && index === activeStepIndex"
-                  label="Я научился!"
+                  label="Умеем!"
                   color="primary"
                   rounded
                   unelevated
@@ -91,7 +90,7 @@
                 />
                 <q-btn
                   v-else-if="index > activeStepIndex"
-                  label="Сначала пройди прошлый этап"
+                  label="Сначала предыдущий этап"
                   color="grey-4"
                   text-color="grey-7"
                   rounded
@@ -132,6 +131,7 @@
           />
         </q-card-actions>
       </q-card>
+    </div>
     </q-dialog>
   </template>
 
@@ -181,52 +181,50 @@
 
 <style scoped>
 .step-bubble {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid rgba(255, 255, 255);
+  background: white;
+  color: var(--main-color);
+  border: 2px solid var(--main-color);
   transition: all 0.3s ease;
   z-index: 2;
+  flex: 1;
+  aspect-ratio: 1 / 1;
 }
 
 .step-bubble.completed {
-  color: var(--q-primary);
-  background: white;
-  border-color: #ffffff;
+  color:white;
+  background: var(--main-color);
 }
 
 .step-bubble.active {
   background: white !important;
-  color: var(--q-primary);
-  transform: scale(1.15);
+  color: var(--main-color);
+  transform: scale(1.25);
 }
 .step-bubble.active.completed {
+  background: var(--main-color) !important;
+  color:white !important;
 }
 
 .step-bubble.locked {
-  background: rgba(0, 0, 0, 0.1);
-  border-color: transparent;
+  background: #e5e5e5;
+  color: #868686;
+  border-color: #e5e5e5
 }
 
 .step-bubble.active.locked {
   background: rgba(0, 0, 0, 0.1);
-  color: #868686;
-  border-color: transparent;
 }
 
 .step-connector {
   height: 3px;
-  width: 30px;
-  min-width: 30px;
+  flex: 0.75;
   background: rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
 .step-connector.done {
-  background: rgba(255, 255, 255, 1);
+  background: var(--main-color);
   height: 5px;
 }
 </style>
