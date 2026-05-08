@@ -56,7 +56,7 @@
       </div>
 
       <div>
-          <div class="q-pa-md q-gutter-y-lg">
+          <div class="q-pa-md q-gutter-y-sm">
 
             <div class="row q-mt-md">
               <div class="col">
@@ -101,15 +101,12 @@
             </div>
 
             <!-- 2. График (уже вынесен ранее) -->
-            <q-card flat bordered class="rounded-16 shadow-1">
-              <q-card-section class="q-pb-none">
-                <div class="text-subtitle1 text-weight-bold">Динамика развития</div>
-              </q-card-section>
+            <q-card flat bordered class="rounded-16 q-mb-md">
               <q-card-section class="q-pa-none">
                 <WeeklyProgressChart
                   :skills-data="child.statistics.weekly.skills"
                   :stages-data="child.statistics.weekly.stages"
-                  height="300"
+                  height="140"
                 />
               </q-card-section>
             </q-card>
