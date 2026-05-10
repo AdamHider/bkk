@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { api } from 'boot/axios'
+import { api } from 'src/boot/fetch'
 
 const skills = ref({
   in_progress: [],
@@ -9,8 +9,9 @@ const skills = ref({
 
 export function useSkills() {
   
+  
   const loadSkills = async (childId, status) => {
-    const { data } = await api.post('/Skill/getList', { child_id: childId, status })
+    const  data = await api.post('/Skill/getList', { child_id: childId, status })
     
     skills.value[status] = data.map(skill => ({
       ...skill,

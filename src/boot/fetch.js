@@ -1,32 +1,31 @@
-import { boot } from 'quasar/wrappers'
+const BASE_URL = process.env.PROD ? '' : 'https://bikeka.neurabyte.ru';
 
-const BASE_URL = 'http://bikeka-app.local'
+export const api = {
+  async post(url, data = {}) {
+    // Определяем, является ли data объектом FormData
+    const isFormData = data instanceof FormData;
 
-const apiFetch = async (endpoint, options = {}) => {
-  const url = `${BASE_URL}${endpoint}`
-  
-  // Дефолтные заголовки
-  const defaultOptions = {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    const headers = {
+      'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    // Если это НЕ FormData, то это обычный JSON — ставим заголовок и сериализуем
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    const response = await fetch(`${BASE_URL}${url}`, {
+      method: 'POST',
+      headers: headers,
+      // Если FormData — передаем как есть, если нет — превращаем в строку JSON
+      body: isFormData ? data : JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Ошибка: ${response.status}`);
+    }
+
+    return response.json();
   }
-
-  const response = await fetch(url, defaultOptions)
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ message: 'Ошибка сервера' }))
-    throw new Error(error.message || `Ошибка: ${response.status}`)
-  }
-
-  return response.json()
-}
-
-export default boot(({ app }) => {
-  // Пробрасываем в компоненты (опционально)
-  app.config.globalProperties.$api = apiFetch
-})
-
-export { apiFetch }
+};

@@ -88,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onActivated } from 'vue'
 import { useQuasar } from 'quasar'
 import { useSkills } from 'src/composables/useSkills'
 
@@ -132,39 +132,44 @@ const openDetails = (skill) => {
   selectedSkill.value = skill
   detailsDialogVisible.value = true
 }
+
 const handleStatusChange = async (newStatus, explicitSkillId = null) => {
   const targetSkillId = explicitSkillId || selectedSkill.value?.id
-
   if (!targetSkillId) {
     console.error("Skill ID not found")
     return
   }
-
+  const skillTitle = selectedSkill.value?.title || "Навык"
   try {
     await updateStatus(childId, targetSkillId, newStatus)
-
-    // Закрываем окна
-    detailsDialogVisible.value = false
-
-    // Если мы перевели навык из "неизученных" (в работу или сразу в архив),
-    // обновляем список неизученных и закрываем диалог выбора
     if (unmasteredDialogVisible.value) {
       await loadSkills(childId, 'not_started')
-      // Закрываем только если это "В работу" (чтобы не прыгать туда-сюда)
-      // Если нажал "Уже умеет", можно оставить окно открытым для дальнейшего выбора
-      if (newStatus === 'in_progress') unmasteredDialogVisible.value = false
+    }
+    await loadSkills(childId, 'in_progress')
+    await loadSkills(childId, 'mastered') 
+    if (newStatus === 'mastered') {
+      $q.dialog({
+        component: SuccessDialog,
+        componentProps: {
+          type: 'skill',
+          title: skillTitle
+        }
+      })
+    } else {
+      $q.notify({
+        color: 'positive',
+        icon: 'work',
+        message: 'Добавлено в работу'
+      })
     }
 
-    // Всегда обновляем список активных на главной
-    await loadSkills(childId, 'in_progress')
-
-    $q.notify({
-      color: 'positive',
-      icon: 'done',
-      message: newStatus === 'mastered' ? 'Навык освоен!' : 'Добавлено в работу'
-    })
+    if (unmasteredDialogVisible.value) unmasteredDialogVisible.value = false
   } catch (e) {
-    $q.notify({ color: 'negative', message: 'Не удалось обновить статус' })
+    $q.notify({ 
+      color: 'negative', 
+      message: 'Не удалось обновить статус',
+      icon: 'error'
+    })
   }
 }
 
@@ -172,10 +177,8 @@ const handleCheck = async (stage) => {
   try {
     await updateStage(childId, stage.id, true)
 
-    // Тихое обновление данных
     await loadSkills(childId, 'in_progress')
 
-    // Обновляем ссылку на выбранный навык, чтобы диалог перерисовал чекбоксы
     if (selectedSkill.value) {
       selectedSkill.value = skills.value.in_progress.find(s => s.id === selectedSkill.value.id)
     }
@@ -183,7 +186,6 @@ const handleCheck = async (stage) => {
     $q.notify({ color: 'negative', message: 'Ошибка сохранения прогресса' })
   }
 }
-
 
 const getFirstUnfinishedIndex = (skill) => {
   return skill.stages.findIndex(s => !s.is_completed)
@@ -193,6 +195,6 @@ const isAllStagesCompleted = (skill) => {
   return skill.stages.length > 0 && skill.stages.every(s => s.is_completed)
 }
 
-onMounted(refreshActive)
+onActivated(refreshActive)
 </script>
 

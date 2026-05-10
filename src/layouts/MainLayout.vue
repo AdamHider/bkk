@@ -1,11 +1,16 @@
 <template>
   <q-layout view="lhh Lpr lFf">
+    <ConnectionStatusDialog />
     <q-toolbar class="main-header ">
       <LogoSimple/>
     </q-toolbar>
 
     <q-page-container>
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" :key="$route.fullPath" />
+        </keep-alive>
+      </router-view>
     </q-page-container>
     <q-footer bordered class="bg-white text-primary">
       <q-tabs no-caps active-color="primary" indicator-color="primary" class="text-grey">
@@ -21,6 +26,8 @@
 <script setup>
 
 import LogoSimple from '../components/LogoSimple.vue'
+import ConnectionStatusDialog from '../components/ConnectionStatusDialog.vue'
+
 </script>
 <style scoped>
 .main-header{

@@ -150,24 +150,19 @@
     set: (val) => emit('update:modelValue', val)
   })
 
-  // Индекс таба, который сейчас открыт на экране
   const currentStepIndex = ref(0)
 
-  // Индекс первого незавершенного этапа (тот, который нужно учить сейчас)
   const activeStepIndex = computed(() => {
     const index = props.skill.stages.findIndex(s => !s.is_completed)
     return index === -1 ? props.skill.stages.length - 1 : index
   })
 
-  // Следим за открытием диалога, чтобы выставить степпер на первый незавершенный этап
   watch(() => props.modelValue, (newVal) => {
     if (newVal && props.currentIndex !== -1) {
       currentStepIndex.value = props.currentIndex
     }
   })
 
-  // Если currentIndex меняется (например, после нажатия "Выучили"),
-  // перекидываем пользователя на следующий шаг автоматически
   watch(() => props.currentIndex, (newIdx) => {
     if (newIdx !== -1) currentStepIndex.value = newIdx
   })

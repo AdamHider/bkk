@@ -11,7 +11,7 @@
             <div class="col-3 q-pt-md">
               <div class="q-pa-sm">
                 <q-avatar color="white" text-color="primary" size="50px">
-                  <b>{{ child.statistics.main.to_learn }}</b>
+                  <b>{{ child.statistics.main.to_learn ?? 0 }}</b>
                 </q-avatar>
                 <div class="line-h-1 text-white text-caption q-mt-sm"><b>Учим</b></div>
               </div>
@@ -46,7 +46,7 @@
             <div class="col-3 q-pt-md">
               <div class="q-pa-sm">
                 <q-avatar color="white" text-color="primary" size="50px">
-                  <b>{{ child.statistics.main.total_mastered }}</b>
+                  <b>{{ child.statistics.main.total_mastered ?? 0 }}</b>
                 </q-avatar>
                 <div class="line-h-1 text-white text-caption q-mt-sm"><b>Умеем</b></div>
               </div>
@@ -113,7 +113,7 @@
               </q-card-section>
             </q-card>
 
-            <DomainAnalysis
+            <DomainAnalysis v-if="child.statistics.domains.top.length > 0 "
               :top="child.statistics.domains.top"
               :weak="child.statistics.domains.weak"
             />
@@ -122,7 +122,7 @@
       </div>
 
         <!-- Топ 5 навыков в работе -->
-        <div class="q-px-md">
+        <div class="q-px-md" v-if="child.skills.active.length > 0">
           <div class="row justify-between items-center q-mb-sm">
             <div class="text-subtitle1 text-weight-bold text-grey-9">Мы учим</div>
             <q-btn flat no-caps color="primary" label="Показать все" to="/skills" icon-right="chevron_right" dense/>
@@ -134,8 +134,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { api } from 'boot/axios' // Возвращаем любимый Axios
+import { ref, computed, onActivated } from 'vue'
+import { api } from 'src/boot/fetch' // Возвращаем любимый Axios
 import SkillSlider from 'components/SkillSlider.vue'
 import { useQuasar } from 'quasar'
 import BubbleBackground from 'src/components/BubbleBackground.vue';
@@ -152,7 +152,7 @@ const loadDashboard = async () => {
   loading.value = true
   try {
     const response = await api.post('/Child/getItem', { child_id: childId })
-    child.value = response.data
+    child.value = response
   } catch (error) {
     console.error('Ошибка API:', error)
   } finally {
@@ -163,32 +163,35 @@ const loadDashboard = async () => {
 const fileInput = ref(null)
 const uploading = ref(false)
 
-// Вызов диалога выбора файла
 const triggerFileInput = () => {
   fileInput.value.click()
 }
 
-// Обработка выбранного файла
 const onFileSelected = async (event) => {
   const file = event.target.files[0]
   if (!file) return
+
   if (file.size > 5 * 1024 * 1024) {
     $q.notify({ color: 'negative', message: 'Файл слишком большой' })
     return
   }
+
   const formData = new FormData()
   formData.append('child_id', childId)
-  formData.append('avatar', file) // Поле, которое будет ждать сервер
-  uploading.value = true
-  try {
-    // Отправляем на child->updateItem
-    const response = await api.post('/Child/updateImage', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
+  formData.append('avatar', file)
 
-    if (response.data.status == 'success') {
-      child.value.avatar = response.data.avatar
+  uploading.value = true
+  
+  try {
+    // ВАЖНО: Мы больше не передаем заголовки вручную здесь
+    const response = await api.post('/Child/updateImage', formData)
+
+    // У fetch и нашей обертки структура ответа отличается от Axios 
+    // (обычно данные уже лежат в корне объекта)
+    if (response.status === 'success') {
+      child.value.avatar = response.avatar
       $q.notify({ color: 'positive', message: 'Фото обновлено', icon: 'done' })
+      loadDashboard()
     }
   } catch (error) {
     console.error('Ошибка загрузки:', error)
@@ -199,7 +202,7 @@ const onFileSelected = async (event) => {
   }
 }
 
-onMounted(loadDashboard)
+onActivated(loadDashboard)
 </script>
 
 <style scoped>
