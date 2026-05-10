@@ -1,8 +1,8 @@
 <template>
   <q-dialog v-model="isOpen" transition-show="slide-up" transition-hide="slide-down" maximized>
     <q-card >
-      <q-card-section class="row items-center q-pb-none">
-        <div class="text-h6 text-grey-9">
+      <q-card-section class="row items-center q-pb-sm">
+        <div class="text-h6 text-weight-bold">
           Доступные навыки
           <q-chip round color="primary" text-color="white" size="sm">{{ filteredSkills.length }}</q-chip>
         </div>
@@ -10,11 +10,12 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
 
-      <q-card-section class="column q-px-none" style="height: calc(100% - 50px)">
+      <q-card-section class="column q-pa-none" style="height: calc(100% - 50px)">
         <q-input
           v-model="search"
           dense
           outlined
+          rounded
           placeholder="Поиск навыка..."
           class="q-mx-md"
           style="flex: 0"
@@ -24,7 +25,7 @@
           </template>
         </q-input>
 
-        <q-scroll-area style="flex: 1">
+        <q-scroll-area style="flex: 1" class="q-pt-md">
           <q-list  class="q-pa-md">
             <q-expansion-item
               v-for="skill in filteredSkills"
@@ -57,19 +58,19 @@
 
                 <q-card-actions class="flex justify-center q-px-md q-pb-md">
                   <q-btn
-                    unelevated
-                    label="Учить"
-                    color="primary"
-                    icon="sym_o_exercise"
-                    @click="handleAction(skill, 'in_progress')"
-                  />
-                  <q-btn
-                    unelevated
                     label="Умеем"
-                    color="red-1"
+                    color="white"
                     text-color="primary"
+                    class="q-push rounded-sm"
                     icon="done_all"
                     @click="handleAction(skill, 'mastered')"
+                  />
+                  <q-btn
+                    label="Учить"
+                    text-color="white"
+                    class="bg-gradient-primary q-push rounded-sm q-ml-lg"
+                    icon="sym_o_exercise"
+                    @click="handleAction(skill, 'in_progress')"
                   />
                 </q-card-actions>
               </q-card>

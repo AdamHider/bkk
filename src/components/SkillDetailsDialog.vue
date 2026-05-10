@@ -81,11 +81,9 @@
               <div>
                 <q-btn
                   v-if="!stage.is_completed && index === activeStepIndex"
-                  label="Умеем!"
-                  color="primary"
-                  rounded
-                  unelevated
-                  class="full-width"
+                  label="Получилось!"
+                  text-color="white"
+                  class="full-width bg-gradient-primary q-push rounded-sm"
                   @click="$emit('check-stage', stage)"
                 />
                 <q-btn
@@ -93,14 +91,19 @@
                   label="Сначала предыдущий этап"
                   color="grey-4"
                   text-color="grey-7"
-                  rounded
                   unelevated
-                  class="full-width"
+                  class="full-width rounded-sm"
                   disable
                 />
-                <div v-else class="text-center text-positive text-weight-bold">
+                <q-btn v-else 
+                  disable
+                  flat
+                  class="full-width text-weight-bold"
+                  text-color="green-7"
+
+                  >
                    <q-icon name="done_all" /> Этот этап успешно пройден!
-                </div>
+                </q-btn>
               </div>
               </q-card>
             </q-tab-panel>

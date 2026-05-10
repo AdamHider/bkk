@@ -72,16 +72,15 @@ const chartOptions = computed(() => {
       yaxis: { lines: { show: false } },
       padding: {
         top: -10,
-        right: 20, // Небольшой отступ, чтобы линия не липла к краю
+        right: 20,
         bottom: -10,
         left: 20
       }
     },
     xaxis: {
-      categories: props.skillsData.map(w => w.label), // Используем ваши новые лейблы
+      categories: props.skillsData.map(w => w.label),
       labels: {
         show: true,
-        rotate:20, // Держим горизонтально для аккуратности
         style: {
           colors: '#9e9e9e',
           fontSize: '10px',

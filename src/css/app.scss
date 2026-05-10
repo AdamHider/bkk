@@ -21,6 +21,9 @@
 .rounded-none{
     border-radius: 0;
 }
+.rounded-sm{
+    border-radius: 12px;
+}
 .rounded-b-none{
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -28,6 +31,12 @@
 .rounded-t-lg{
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
+}
+
+.q-btn--push{
+    &:before{
+    
+    }
 }
 
 .q-item.q-push, .q-expansion-item.q-push{
@@ -41,9 +50,12 @@
     box-shadow: 0px 0px 0px 6px #93333e36;
 }
 .q-btn.q-push{
-    box-shadow: 0px 0px 0px 4px #93333e36 !important;
+    box-shadow: 0px 0px 0px 4px rgba(253, 149, 91, 0.2) !important;
     border: none !important;
     
+    &:before{
+        box-shadow: none;
+    }
 }
 .line-h-1{
     line-height: 1.3;
@@ -62,6 +74,8 @@
 }
 
 .bg-main-primary{ background: $gradient-main-primary; }
+
+.bg-gradient-primary{ background: $gradient-primary; }
 
 .bg-gradient-purple{ background: $gradient-purple; }
 .bg-gradient-deep-purple{ background: $gradient-deep-purple; }

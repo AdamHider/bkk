@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lhh Lpr lFf">
     <q-toolbar class="main-header ">
-      <Logo/>
+      <LogoSimple/>
     </q-toolbar>
 
     <q-page-container>
@@ -20,7 +20,7 @@
 
 <script setup>
 
-import Logo from '../components/Logo.vue'
+import LogoSimple from '../components/LogoSimple.vue'
 </script>
 <style scoped>
 .main-header{

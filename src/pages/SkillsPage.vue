@@ -9,10 +9,8 @@
       </div>
       <q-btn
         round
-        unelevated
-        class="q-mx-sm  q-push"
-        color="white"
-        text-color="primary"
+        class="q-mx-sm q-push bg-gradient-primary"
+        text-color="white"
         icon="add"
         @click="openUnmasteredList"
       />

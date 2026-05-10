@@ -110,3 +110,12 @@
     font-style: normal;
   }
   
+  @font-face {
+    font-family: 'Baloo2';
+    src: local('Baloo2 ExtraBold'), local('Baloo2-ExtraBold'),
+        url('./fonts/Baloo2/Baloo2-ExtraBold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  
+  

@@ -1,7 +1,7 @@
 <template>
-  <q-page class="bg-main-primary q-pa-md" style="padding-top: 50px;">
-    <div class="row items-center justify-between no-wrap q-mb-md q-mt-sm text-white">
-      <div style="text-shadow: 0px 1px 3px #e04c5d;">
+  <q-page class="bg-white q-pa-md" style="padding-top: 50px;">
+    <div class="row items-center justify-between no-wrap q-mb-md q-mt-sm ">
+      <div>
         <div class="text-h6 text-weight-bold">Освоенные навыки
           <q-chip round color="primary" text-color="white" size="sm">{{ skills.mastered.length }}</q-chip>
         </div>
@@ -9,10 +9,8 @@
       </div>
       <q-btn
         round
-        unelevated
-        class="q-mx-sm  q-push"
-        color="white"
-        text-color="primary"
+        class="q-mx-sm q-push bg-gradient-primary"
+        text-color="white"
         icon="add"
         @click="openUnmasteredList"
       />
@@ -53,11 +51,12 @@
             :value="skill.progress.percentage"
             size="40px"
             :thickness="0.2"
-            color="primary"
+            :color="(skill.progress.percentage >= 1) ? 'green-4' : 'primary'"
             track-color="grey-3"
-            class="text-primary text-weight-bold"
+            :class="`text-${(skill.progress.percentage >= 1) ? 'green-6' : 'primary'}`"
           >
-            {{ skill.progress.label }}
+            <q-icon v-if="skill.progress.percentage >= 1" name="check" size="20px"></q-icon>
+            <b v-else>{{ skill.progress.label }}</b>
           </q-circular-progress>
         </q-item-section>
       </q-item>
