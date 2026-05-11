@@ -11,23 +11,23 @@
       </div>
     </transition>
   </template>
-  
+
   <script setup>
   import { ref, onActivated, onDeactivated } from 'vue'
   import axios from 'axios'
-  
+
   const isOnline = ref(true)
   let intervalId = null
-  
+
   const checkConnection = async () => {
     if (!navigator.onLine) {
       isOnline.value = false
       return
     }
     try {
-      await axios.head('http://bikeka-app.local', { 
+      await axios.head('http://bikeka-app.local', {
         timeout: 3000,
-        params: { t: Date.now() } 
+        params: { t: Date.now() }
       })
       isOnline.value = true
     } catch (error) {
@@ -35,24 +35,23 @@
       isOnline.value = false
     }
   }
-  
+
   onActivated(() => {
-    // Первичная проверка
     checkConnection()
-  
+
     window.addEventListener('online', checkConnection)
     window.addEventListener('offline', () => { isOnline.value = false })
-  
+
     intervalId = setInterval(checkConnection, 10000)
   })
-  
+
   onDeactivated(() => {
     window.removeEventListener('online', checkConnection)
     window.removeEventListener('offline', checkConnection)
     if (intervalId) clearInterval(intervalId)
   })
   </script>
-  
+
   <style scoped>
   .offline-badge {
     position: fixed;

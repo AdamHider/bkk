@@ -10,7 +10,7 @@
         <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
 
-      <q-card-section class="column q-pa-none" style="height: calc(100% - 50px)">
+      <q-card-section class="column q-pa-none" style="height: calc(100% - 57px)">
         <q-input
           v-model="search"
           dense
@@ -84,15 +84,44 @@
       </q-card-section>
     </q-card>
   </q-dialog>
+  <q-dialog v-model="showDateDialog" centered transition-show="scale" transition-hide="scale">
+  <q-card style="min-width: 300px" class="rounded-borders">
+    <q-card-section class="bg-primary text-white q-py-sm">
+      <div class="text-subtitle1">Когда научились?</div>
+    </q-card-section>
+
+    <q-card-section class="q-pa-none flex justify-center">
+      <q-date
+        v-model="selectedDate"
+        minimal
+        flat
+        class="full-width"
+      />
+    </q-card-section>
+
+    <q-card-actions align="right" class="q-pa-md">
+      <q-btn flat label="Отмена" color="grey" v-close-popup />
+      <q-btn
+        label="Подтвердить"
+        color="primary"
+        class="q-px-md rounded-sm q-push"
+        @click="confirmMastered"
+      />
+    </q-card-actions>
+  </q-card>
+</q-dialog>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
+import { date } from 'quasar' // Импортируем утилиту для работы с датами
 
 const props = defineProps(['modelValue', 'skills'])
 const emit = defineEmits(['update:modelValue', 'select-skill', 'update-status'])
-
+const showDateDialog = ref(false) // Контроль окна даты
+const selectedDate = ref(date.formatDate(Date.now(), 'YYYY/MM/DD')) // Сегодняшняя дата по умолчанию
+const tempSkill = ref(null) // Навык, для которого выбираем дату
 const search = ref('')
 
 const isOpen = computed({
@@ -111,7 +140,21 @@ const filteredSkills = computed(() => {
 })
 
 const handleAction = (skill, status) => {
-  emit('select-skill', skill, status)
+  if (status === 'mastered') {
+    tempSkill.value = skill
+    showDateDialog.value = true
+  } else {
+    emit('select-skill', skill, status, date.formatDate(Date.now(), 'YYYY-MM-DD'))
+  }
+}
+
+const confirmMastered = () => {
+  if (tempSkill.value) {
+    const formattedDate = selectedDate.value.replace(/\//g, '-')
+    emit('select-skill', tempSkill.value, 'mastered', formattedDate)
+    showDateDialog.value = false
+    tempSkill.value = null
+  }
 }
 onBeforeRouteLeave((to, from) => {
   if (isOpen.value) {

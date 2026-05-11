@@ -181,12 +181,12 @@ const onFileSelected = async (event) => {
   formData.append('avatar', file)
 
   uploading.value = true
-  
+
   try {
     // ВАЖНО: Мы больше не передаем заголовки вручную здесь
     const response = await api.post('/Child/updateImage', formData)
 
-    // У fetch и нашей обертки структура ответа отличается от Axios 
+    // У fetch и нашей обертки структура ответа отличается от Axios
     // (обычно данные уже лежат в корне объекта)
     if (response.status === 'success') {
       child.value.avatar = response.avatar

@@ -70,7 +70,7 @@
     <UnmasteredSkillsDialog
       v-model="unmasteredDialogVisible"
       :skills="skills.not_started"
-      @select-skill="(skill, status) => handleStatusChange(status, skill.id)"
+      @select-skill="(skill, status, updated_at) => handleStatusChange(status, skill.id, updated_at)"
       @update-status="handleStatusChange"
     />
 
@@ -127,7 +127,7 @@ const openDetails = (skill) => {
   selectedSkill.value = skill
   detailsDialogVisible.value = true
 }
-const handleStatusChange = async (newStatus, explicitSkillId = null) => {
+const handleStatusChange = async (newStatus, explicitSkillId = null, updated_at = null) => {
   const targetSkillId = explicitSkillId || selectedSkill.value?.id
   if (!targetSkillId) {
     console.error("Skill ID not found")
@@ -135,12 +135,12 @@ const handleStatusChange = async (newStatus, explicitSkillId = null) => {
   }
   const skillTitle = selectedSkill.value?.title || "Навык"
   try {
-    await updateStatus(childId, targetSkillId, newStatus)
+    await updateStatus(childId, targetSkillId, newStatus, updated_at)
     if (unmasteredDialogVisible.value) {
       await loadSkills(childId, 'not_started')
     }
     await loadSkills(childId, 'in_progress')
-    await loadSkills(childId, 'mastered') 
+    await loadSkills(childId, 'mastered')
     if (newStatus === 'mastered') {
       $q.dialog({
         component: SuccessDialog,
@@ -158,10 +158,9 @@ const handleStatusChange = async (newStatus, explicitSkillId = null) => {
       })
     }
 
-    if (unmasteredDialogVisible.value) unmasteredDialogVisible.value = false
   } catch (e) {
-    $q.notify({ 
-      color: 'negative', 
+    $q.notify({
+      color: 'negative',
       message: 'Не удалось обновить статус',
       icon: 'error'
     })
@@ -190,10 +189,10 @@ const handleCheck = async (stage) => {
 
   } catch (e) {
     console.error(e)
-    $q.notify({ 
-      color: 'negative', 
+    $q.notify({
+      color: 'negative',
       message: 'Ошибка сохранения прогресса',
-      icon: 'error_outline' 
+      icon: 'error_outline'
     })
   }
 }

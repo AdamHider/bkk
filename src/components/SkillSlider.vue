@@ -3,14 +3,13 @@
 
     <!-- Swiper Контейнер -->
     <swiper
-      :slides-per-view="'auto'"
+      :slides-per-view="3.5"
       :space-between="12"
       class="skill-swiper q-px-md"
     >
       <swiper-slide
         v-for="skill in skills"
         :key="skill.id"
-        style="width: 120px;"
       >
         <q-card flat
           class="skill-card bg-transparent text-center q-pa-sm"
@@ -38,7 +37,7 @@
           </q-card-section>
 
           <q-card-section class="q-pa-xs">
-            <div class="text-caption text-weight-bold text-grey-9 ellipsis-2-lines line-h-1">
+            <div class="text-caption text-weight-bold text-grey-9 ellipsis-2-lines line-h-1" style="font-size: 10px;">
               {{ skill.title }}
             </div>
           </q-card-section>

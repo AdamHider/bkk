@@ -8,11 +8,11 @@ const skills = ref({
 })
 
 export function useSkills() {
-  
-  
+
+
   const loadSkills = async (childId, status) => {
     const  data = await api.post('/Skill/getList', { child_id: childId, status })
-    
+
     skills.value[status] = data.map(skill => ({
       ...skill,
       current_status: status,
@@ -21,18 +21,18 @@ export function useSkills() {
         is_completed: Boolean(Number(stage.is_completed))
       }))
     }))
-    
+
     return skills.value[status]
   }
 
-  const updateStatus = (child_id, skill_id, status) => 
-    api.post('/Skill/updateStatus', { child_id, skill_id, status })
+  const updateStatus = (child_id, skill_id, status, updated_at) =>
+    api.post('/Skill/updateStatus', { child_id, skill_id, status, updated_at })
 
-  const updateStage = (child_id, stage_id, is_completed) => 
+  const updateStage = (child_id, stage_id, is_completed) =>
     api.post('/Skill/updateStage', { child_id, stage_id, is_completed })
 
   return {
-    skills, 
+    skills,
     loadSkills,
     updateStatus,
     updateStage
