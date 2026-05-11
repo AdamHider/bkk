@@ -1,10 +1,7 @@
 <template>
   <q-page class="bg-white">
-    <div v-if="loading" class="flex flex-center q-pa-xl">
-      <q-spinner-dots color="primary" size="40px" />
-    </div>
 
-    <div v-else-if="child">
+    <div v-if="child">
       <div class="bg-main-primary relative-position overflow-hidden">
           <BubbleBackground/>
         <div class="row items-center text-center justify-center q-px-md">
@@ -101,8 +98,24 @@
             </div>
 
             <q-card flat  class="rounded-16 q-mb-md rounded-borders">
-              <q-card-section class="q-pb-none  q-pt-sm text-center">
-                <div><b>Динамика прогресса</b></div>
+              <q-card-section class="q-pb-none q-px-sm flex justify-between items-center q-pt-sm text-center">
+                <div><q-icon name="sym_o_query_stats" color="grey-7" class="q-mr-xs" size="20px"/><b>Динамика</b></div>
+                <div>
+                  <q-btn-toggle
+                    v-model="statsPeriod"
+                    color="grey-2"
+                    text-color="primary"
+                    toggle-color="primary"
+                    toggle-text-color="white"
+                     unelevated
+                    size="sm"
+                    :options="[
+                      {label: 'Недели', value: 'week'},
+                      {label: 'Месяцы', value: 'month'}
+                    ]"
+                  />
+
+                </div>
               </q-card-section>
               <q-card-section class="q-pa-none">
                 <WeeklyProgressChart
@@ -134,8 +147,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onActivated } from 'vue'
-import { api } from 'src/boot/fetch' // Возвращаем любимый Axios
+import { ref, watch, onActivated } from 'vue'
+import { api } from 'src/boot/fetch'
 import SkillSlider from 'components/SkillSlider.vue'
 import { useQuasar } from 'quasar'
 import BubbleBackground from 'src/components/BubbleBackground.vue';
@@ -143,7 +156,7 @@ import WeeklyProgressChart from '../components/WeeklyProgressChart.vue'
 import DomainAnalysis from '../components/DomainAnalysis.vue'
 
 const $q = useQuasar()
-
+const statsPeriod = ref('week')
 const childId = 1
 const child = ref(null)
 const loading = ref(true)
@@ -151,7 +164,7 @@ const loading = ref(true)
 const loadDashboard = async () => {
   loading.value = true
   try {
-    const response = await api.post('/Child/getItem', { child_id: childId })
+    const response = await api.post('/Child/getItem', { child_id: childId, stats_period: statsPeriod.value })
     child.value = response
   } catch (error) {
     console.error('Ошибка API:', error)
@@ -183,11 +196,7 @@ const onFileSelected = async (event) => {
   uploading.value = true
 
   try {
-    // ВАЖНО: Мы больше не передаем заголовки вручную здесь
     const response = await api.post('/Child/updateImage', formData)
-
-    // У fetch и нашей обертки структура ответа отличается от Axios
-    // (обычно данные уже лежат в корне объекта)
     if (response.status === 'success') {
       child.value.avatar = response.avatar
       $q.notify({ color: 'positive', message: 'Фото обновлено', icon: 'done' })
@@ -201,6 +210,10 @@ const onFileSelected = async (event) => {
     event.target.value = ''
   }
 }
+
+watch(() => statsPeriod.value, (newIdx) => {
+  loadDashboard()
+})
 
 onActivated(loadDashboard)
 </script>
