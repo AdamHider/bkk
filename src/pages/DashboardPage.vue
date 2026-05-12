@@ -126,6 +126,9 @@
               </q-card-section>
             </q-card>
 
+            <div>
+              <PreferenceList :stimulus="child.preferences.stimulus" :triggers="child.preferences.triggers" :child-id="child.id" @update="handleLoad"/>
+            </div>
             <DomainAnalysis v-if="child.statistics.domains.top.length > 0 "
               :top="child.statistics.domains.top"
               :weak="child.statistics.domains.weak"
@@ -148,78 +151,42 @@
 
 <script setup>
 import { ref, watch, onActivated } from 'vue'
-import { api } from 'src/boot/fetch'
 import SkillSlider from 'components/SkillSlider.vue'
-import { useQuasar } from 'quasar'
 import BubbleBackground from 'src/components/BubbleBackground.vue';
 import WeeklyProgressChart from '../components/WeeklyProgressChart.vue'
 import DomainAnalysis from '../components/DomainAnalysis.vue'
+import PreferenceList from '../components/PreferenceList.vue'
+import { useChild } from 'src/composables/useChild'
 
-const $q = useQuasar()
-const statsPeriod = ref('week')
 const childId = 1
-const child = ref(null)
+const statsPeriod = ref('week')
+const fileInput = ref(null)
+
 const loading = ref(true)
 
-const loadDashboard = async () => {
+const { child, uploading, loadChild, updateAvatar } = useChild()
+
+const handleLoad = async () => {
   loading.value = true
   try {
-    const response = await api.post('/Child/getItem', { child_id: childId, stats_period: statsPeriod.value })
-    child.value = response
-  } catch (error) {
-    console.error('Ошибка API:', error)
+    await loadChild(childId, statsPeriod.value)
   } finally {
     loading.value = false
   }
 }
 
-const fileInput = ref(null)
-const uploading = ref(false)
-
 const triggerFileInput = () => {
   fileInput.value.click()
 }
-
 const onFileSelected = async (event) => {
   const file = event.target.files[0]
-  if (!file) return
-
-  if (file.size > 5 * 1024 * 1024) {
-    $q.notify({ color: 'negative', message: 'Файл слишком большой' })
-    return
+  if (file) {
+    await updateAvatar(childId, file)
   }
-
-  const formData = new FormData()
-  formData.append('child_id', childId)
-  formData.append('avatar', file)
-
-  uploading.value = true
-
-  try {
-    const response = await api.post('/Child/updateImage', formData)
-    if (response.status === 'success') {
-      child.value.avatar = response.avatar
-      $q.notify({ color: 'positive', message: 'Фото обновлено', icon: 'done' })
-      loadDashboard()
-    }
-  } catch (error) {
-    console.error('Ошибка загрузки:', error)
-    $q.notify({ color: 'negative', message: 'Не удалось загрузить фото' })
-  } finally {
-    uploading.value = false
-    event.target.value = ''
-  }
+  event.target.value = ''
 }
 
-watch(() => statsPeriod.value, (newIdx) => {
-  loadDashboard()
-})
+watch(statsPeriod, handleLoad)
 
-onActivated(loadDashboard)
+onActivated(handleLoad)
 </script>
-
-<style scoped>
-.border-white {
-  border: 2px solid white;
-}
-</style>
