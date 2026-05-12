@@ -7,8 +7,8 @@
       indicator-color="primary"
       align="justify"
     >
-      <q-tab name="easy"><b>Даётся легко</b></q-tab>
-      <q-tab name="hard"><b>Даётся сложно</b></q-tab>
+      <q-tab name="easy" style="text-transform: inherit;"><b>Даётся легко</b></q-tab>
+      <q-tab name="hard" style="text-transform: inherit;"><b>Даётся сложно</b></q-tab>
     </q-tabs>
 
     <q-separator />

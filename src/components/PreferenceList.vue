@@ -1,6 +1,5 @@
 <template>
-  <div class="sensory-profile">
-    <!-- СЕКЦИЯ СТИМУЛОВ -->
+  <div class="q-mb-sm">
     <div class="q-mb-md">
       <div class="row items-center justify-between q-mb-sm">
         <div class=" text-weight-bold ">
@@ -8,46 +7,56 @@
           {{ child.name }} любит
           <q-badge color="green-7" text-color="white" class="q-ml-xs" rounded><b>{{ stimulus.length }}</b></q-badge>
         </div>
-        <q-btn flat round dense icon="add_circle" color="green-7" @click="openForm('stimulus')" />
+        <q-btn icon="add" round unelevated size="sm" color="green-7" @click="openForm('stimulus')" />
       </div>
 
-      <div class="row q-gutter-xs">
-        <q-chip
-          v-for="item in stimulus" :key="item.id"
-          clickable square
-          :icon="getIcon(item.category)"
-          color="green-7"
-          text-color="white"
-          :icon-right="`sym_o_counter_${item.intensity}`"
-          @click="openForm('stimulus', item)">
-          {{ item.title }}
-        </q-chip>
+      <div class="masonry-scroll-wrapper">
+        <div class="dual-row-container">
+          <div v-for="(row, rowIndex) in sortedStimulus" :key="rowIndex" class="chip-row">
+            <q-chip
+              v-for="item in row" :key="item.id"
+              clickable square
+              :icon="getIcon(item.category)"
+              color="green-7"
+              text-color="white"
+              class="rounded-xs q-ma-none"
+              :style="{ opacity: 0.4 + (item.intensity / 5) * 0.6 }"
+              @click="openForm('stimulus', item)"
+            >
+              <b>{{ item.title }}</b>
+            </q-chip>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="q-mb-md">
       <div class="row items-center justify-between q-mb-sm">
-        <div class="text-subtitle2 text-weight-bold">
+        <div class="text-weight-bold">
           <q-icon name="thunderstorm" color="red-7" size="20px" class="q-mr-xs" />
           {{ child.name }} не любит
           <q-badge color="red-7" text-color="white" class="q-ml-xs" rounded><b>{{ triggers.length }}</b></q-badge>
         </div>
-        <q-btn flat round dense icon="add_circle" color="red-7" @click="openForm('trigger')" />
+        <q-btn unelevated round  icon="add" size="sm" color="red-7" @click="openForm('trigger')" />
       </div>
 
-      <div class="row q-gutter-xs">
-        <q-chip
-          v-for="item in triggers" :key="item.id"
-          clickable
-          :icon="getIcon(item.category)"
-          color="red-7"
-          text-color="white"
-          class="shadow-1"
-          :icon-right="`sym_o_counter_${item.intensity}`"
-          @click="openForm('trigger', item)"
-        >
-          {{ item.title }}
-        </q-chip>
+      <div class="masonry-scroll-wrapper">
+        <div class="dual-row-container">
+          <div v-for="(row, rowIndex) in sortedTriggers" :key="rowIndex" class="chip-row">
+            <q-chip
+              v-for="item in row" :key="item.id"
+              clickable square 
+              :icon="getIcon(item.category)"
+              color="red-7"
+              text-color="white"
+              class="rounded-xs"
+              :style="{ opacity: 0.4 + (item.intensity / 5) * 0.6 }"
+              @click="openForm('trigger', item)"
+            >
+              <b>{{ item.title }}</b>
+            </q-chip>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -84,10 +93,10 @@
           <div>
             <q-btn
               v-if="form.id"
-              flat
+              round
+              unelevated
               icon="delete"
               color="red"
-              label="Удалить"
               @click="confirmDelete(form.id)"
             />
           </div>
@@ -97,7 +106,9 @@
             <q-btn
               unelevated
               :label="form.id ? 'Обновить' : 'Создать'"
-              :color="form.impact_type === 'stimulus' ? 'green' : 'red'"
+              :icon="form.id ? 'autorenew' : 'add'"
+              text-color="white"
+              class="bg-gradient-primary q-push rounded-sm"
               @click="savePreference"
               :loading="loading"
             />
@@ -109,7 +120,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { api } from 'src/boot/fetch'
 import { useQuasar } from 'quasar'
 import { useChild } from 'src/composables/useChild'
@@ -134,6 +145,20 @@ const categoryOptions = [
   { label: 'Активность', value: 'activity' },
   { label: 'Другое', value: 'other' }
 ]
+
+const sortAndZigzag = (items) => {
+  if (!items?.length) return [[], []]
+  const sorted = [...items].sort((a, b) => b.intensity - a.intensity)
+  
+  // Возвращаем массив из двух массивов (рядов)
+  return [
+    sorted.filter((_, idx) => idx % 2 === 0), // Ряд 1
+    sorted.filter((_, idx) => idx % 2 !== 0)  // Ряд 2
+  ]
+}
+
+const sortedStimulus = computed(() => sortAndZigzag(props.stimulus))
+const sortedTriggers = computed(() => sortAndZigzag(props.triggers))
 
 const initialForm = {
   id: null,
@@ -202,3 +227,36 @@ const getIcon = (cat) => {
   return icons[cat] || 'category'
 }
 </script>
+<style scoped>
+.masonry-scroll-wrapper {
+  margin-left: -16px; 
+  margin-right: -16px;
+  padding: 0 16px;
+  overflow-x: auto;
+  width: calc(100% + 32px);
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.masonry-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+.dual-row-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: max-content;
+  min-width: 100%;
+}
+
+.chip-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.rounded-xs {
+  border-radius: 4px;
+  margin: 0 !important;
+  height: 32px;
+}
+</style>

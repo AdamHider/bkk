@@ -83,15 +83,13 @@
               text-color="grey-7"
               label="Не получается"
               icon="help_outline"
-              class="full-width rounded-sm q-mt-sm"
+              class="full-width rounded-sm q-mt-md"
               @click="helpDialog = true"
             >
               <q-badge color="red" floating>!</q-badge>
             </q-btn>
               <q-separator class="q-my-md" />
-            <!-- КНОПКА ДЕЙСТВИЯ -->
             <div>
-
               <q-btn
                 v-if="!stage.is_completed && index === activeStepIndex"
                 label="Получилось!"
@@ -113,7 +111,6 @@
                 flat
                 class="full-width text-weight-bold"
                 text-color="green-7"
-
                 >
                 <q-icon name="done_all" /> Этот этап успешно пройден!
               </q-btn>
