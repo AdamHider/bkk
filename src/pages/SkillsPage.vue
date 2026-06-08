@@ -103,6 +103,7 @@
       :current-index="selectedSkill ? getFirstUnfinishedIndex(selectedSkill) : -1"
       @check-stage="handleCheck"
       @update-status="handleStatusChange"
+      @create-training="handleCreateTraining"
     />
   </q-page>
 </template>
@@ -117,7 +118,7 @@ import UnmasteredSkillsDialog from 'src/components/UnmasteredSkillsDialog.vue'
 import SuccessDialog from 'components/SuccessDialog.vue'
 
 const $q = useQuasar()
-const { skills, loadSkills, updateStatus, updateStage } = useSkills()
+const { skills, loadSkills, updateStatus, updateStage, createTraining } = useSkills()
 
 const childId = 1
 const isLoading = ref(false)
@@ -186,6 +187,16 @@ const handleStatusChange = async (skillOrStatus, explicitStatus, date) => {
     $q.notify({ color: 'negative', message: 'Ошибка обновления' })
   }
 }
+const handleCreateTraining = async (stage) => {
+  const duration = 15
+  try {
+    await createTraining(childId, stage.id, duration)
+    await loadSkills(childId, 'in_progress')
+  } catch (e) {
+    $q.notify({ color: 'negative', message: 'Ошибка обновления' })
+  }
+}
+
 
 const handleCheck = async (stage) => {
   try {

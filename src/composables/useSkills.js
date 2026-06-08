@@ -8,8 +8,6 @@ const skills = ref({
 })
 
 export function useSkills() {
-
-
   const loadSkills = async (childId, status) => {
     const  data = await api.post('/Skill/getList', { child_id: childId, status })
 
@@ -31,10 +29,14 @@ export function useSkills() {
   const updateStage = (child_id, stage_id, is_completed) =>
     api.post('/Skill/updateStage', { child_id, stage_id, is_completed })
 
+  const createTraining = (child_id, stage_id, duration) =>
+    api.post('/Skill/createTraining', { child_id, stage_id, duration })
+
   return {
     skills,
     loadSkills,
     updateStatus,
-    updateStage
+    updateStage,
+    createTraining
   }
 }

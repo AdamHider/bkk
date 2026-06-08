@@ -90,13 +90,22 @@
             </q-btn>
               <q-separator class="q-my-md" />
             <div>
-              <q-btn
-                v-if="!stage.is_completed && index === activeStepIndex"
-                label="Получилось!"
-                text-color="white"
-                class="full-width bg-gradient-primary q-push rounded-sm"
-                @click="$emit('check-stage', stage)"
-              />
+              <div v-if="index === activeStepIndex">
+                <q-btn
+                  v-if="!stage.is_training"
+                  label="Начать занятие!"
+                  text-color="white"
+                  class="full-width bg-gradient-green q-push rounded-sm"
+                  @click="$emit('create-training', stage)"
+                />
+                <q-btn
+                  v-else-if="!stage.is_completed"
+                  label="Получилось!"
+                  text-color="white"
+                  class="full-width bg-gradient-primary q-push rounded-sm"
+                  @click="$emit('check-stage', stage)"
+                />
+              </div>
               <q-btn
                 v-else-if="index > activeStepIndex"
                 label="Сначала предыдущий этап"
