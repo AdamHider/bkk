@@ -126,7 +126,6 @@ const detailsDialogVisible = ref(false)
 const unmasteredDialogVisible = ref(false)
 const selectedSkill = ref(null)
 
-// Группировка с логикой анализа количества
 const groupedActiveSkills = computed(() => {
   const groups = {}
   skills.value.in_progress.forEach(skill => {
@@ -192,6 +191,9 @@ const handleCreateTraining = async (stage) => {
   try {
     await createTraining(childId, stage.id, duration)
     await loadSkills(childId, 'in_progress')
+    if (selectedSkill.value) {
+      selectedSkill.value = skills.value.in_progress.find(s => s.id === selectedSkill.value.id)
+    }
   } catch (e) {
     $q.notify({ color: 'negative', message: 'Ошибка обновления' })
   }
@@ -203,7 +205,6 @@ const handleCheck = async (stage) => {
     await updateStage(childId, stage.id, true)
     await loadSkills(childId, 'in_progress')
 
-    // Обновляем ссылку в диалоге, чтобы прогресс-бар сразу изменился
     if (selectedSkill.value) {
       selectedSkill.value = skills.value.in_progress.find(s => s.id === selectedSkill.value.id)
     }
