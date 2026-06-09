@@ -16,6 +16,7 @@
       <q-tabs no-caps active-color="primary" indicator-color="primary" class="text-grey">
         <q-route-tab to="/" icon="dashboard"/>
         <q-route-tab to="/skills" icon="sym_o_exercise"/>
+        <q-route-tab to="/calendar" icon="calendar_month"/>
         <q-route-tab to="/archive" icon="sym_o_sentiment_very_satisfied"/>
         <q-route-tab to="/profile" icon="person"/>
       </q-tabs>

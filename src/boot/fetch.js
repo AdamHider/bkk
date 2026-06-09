@@ -17,7 +17,6 @@ export const api = {
     const response = await fetch(`${BASE_URL}${url}`, {
       method: 'POST',
       headers: headers,
-      // Если FormData — передаем как есть, если нет — превращаем в строку JSON
       body: isFormData ? data : JSON.stringify(data)
     });
 

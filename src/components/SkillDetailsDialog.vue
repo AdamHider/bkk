@@ -178,7 +178,7 @@ import SkillHelpSheet from '../components/SkillHelpSheet.vue'
 import StageTrainings from '../components/StageTrainings.vue'
 
 const props = defineProps(['modelValue', 'skill', 'status', 'isAllDone', 'currentIndex'])
-const emit = defineEmits(['update:modelValue', 'update-status', 'check-stage'])
+const emit = defineEmits(['update:modelValue', 'update-status', 'check-stage', 'create-training'])
 
 const isOpen = computed({
   get: () => props.modelValue,

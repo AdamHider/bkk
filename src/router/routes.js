@@ -6,6 +6,7 @@ const routes = [
       { path: '', component: () => import('pages/DashboardPage.vue') },
       { path: 'profile', component: () => import('pages/ProfilePage.vue'), meta: { isDarkLogo: true } },
       { path: 'skills', component: () => import('pages/SkillsPage.vue'), meta: { isDarkLogo: true } },
+      { path: 'calendar', component: () => import('pages/CalendarPage.vue'), meta: { isDarkLogo: true } },
       { path: 'archive', component: () => import('pages/ArchivePage.vue'), meta: { isDarkLogo: true } }
     ]
   },

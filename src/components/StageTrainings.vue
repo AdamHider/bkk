@@ -58,8 +58,9 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 
 const props = defineProps({
-  trainings: { type: Array, default: () => [] }
+  trainings: Array
 })
+const emit = defineEmits(['create-training'])
 
 const timeLeft = ref('00:00')
 let timerInterval = null
@@ -90,7 +91,6 @@ const weekDays = computed(() => {
   return days
 })
 
-// Настройка цветов через Quasar палитру
 const getBubbleBg = (day) => {
   if (day.hasActive) return 'primary'
   if (day.trainings.length) return 'blue-grey-6'
