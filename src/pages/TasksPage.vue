@@ -271,6 +271,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 import { api } from 'src/boot/fetch'
 import { useQuasar } from 'quasar'
 import { useSkills } from 'src/composables/useSkills'
@@ -283,7 +284,6 @@ const allTasks = ref([])
 const isListDialogOpen = ref(false)
 const isFormDialogOpen = ref(false)
 
-// В структуре формы теперь опционально присутствует id
 const form = ref({ id: null, description: '', deadline: null })
 
 const activeTab = ref('manual')
@@ -459,6 +459,18 @@ const formatItemDate = (dateStr) => {
 }
 
 onMounted(() => loadTasks())
+
+onBeforeRouteLeave((to, from) => {
+  if (isFormDialogOpen.value) {
+    isFormDialogOpen.value = false
+    return false
+  }
+  if (isListDialogOpen.value) {
+    isListDialogOpen.value = false
+    return false
+  }
+  return true
+})
 </script>
 
 <style scoped>
@@ -469,8 +481,5 @@ onMounted(() => loadTasks())
 }
 .text-strikethrough {
   text-decoration: line-through;
-}
-.rounded-md {
-  border-radius: 12px;
 }
 </style>
