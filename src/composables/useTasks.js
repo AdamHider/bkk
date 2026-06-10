@@ -1,0 +1,42 @@
+import { ref } from 'vue'
+import { api } from 'src/boot/fetch'
+
+const skills = ref({
+  in_progress: [],
+  not_started: [],
+  mastered: []
+})
+
+export function useTasks() {
+  const loadTasks = async (childId, status) => {
+    const  data = await api.post('/Task/getList', { child_id: childId, status })
+
+    skills.value[status] = data.map(skill => ({
+      ...skill,
+      current_status: status,
+      stages: (skill.stages || []).map(stage => ({
+        ...stage,
+        is_completed: Boolean(Number(stage.is_completed))
+      }))
+    }))
+
+    return skills.value[status]
+  }
+
+  const updateStatus = (child_id, skill_id, status, updated_at) =>
+    api.post('/Skill/updateStatus', { child_id, skill_id, status, updated_at })
+
+  const updateStage = (child_id, stage_id, is_completed) =>
+    api.post('/Skill/updateStage', { child_id, stage_id, is_completed })
+
+  const createTraining = (child_id, stage_id, duration) =>
+    api.post('/Skill/createTraining', { child_id, stage_id, duration })
+
+  return {
+    skills,
+    loadSkills,
+    updateStatus,
+    updateStage,
+    createTraining
+  }
+}

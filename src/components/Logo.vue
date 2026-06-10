@@ -29,11 +29,9 @@ import { watch, ref } from 'vue'
 
 const route = useRoute()
 
-
 const isDarkLogo = ref(route.meta.isDarkLogo)
 watch(route, () => {
   isDarkLogo.value = route.meta.isDarkLogo
-  console.log(route)
 })
 </script>
 <style lang="scss">

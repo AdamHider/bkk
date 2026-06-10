@@ -73,7 +73,7 @@
       @select-skill="handleStatusChange"
     />
 
-    <SkillDetailsDialog
+    <SkillDialog
       v-model="detailsDialogVisible"
       :skill="selectedSkill"
       @update-status="handleStatusChange"
@@ -86,7 +86,7 @@ import { ref, computed, onActivated } from 'vue'
 import { useQuasar, date } from 'quasar'
 import { useSkills } from 'src/composables/useSkills'
 
-import SkillDetailsDialog from 'src/components/SkillDetailsDialog.vue'
+import SkillDialog from 'src/components/SkillDialog.vue'
 import UnmasteredSkillsDialog from 'src/components/UnmasteredSkillsDialog.vue'
 
 const $q = useQuasar()

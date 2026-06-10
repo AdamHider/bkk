@@ -12,7 +12,7 @@
         </keep-alive>
       </router-view>
     </q-page-container>
-    <q-footer bordered class="bg-white text-primary">
+    <q-footer v-if="bottomBarEnabled" bordered class="bg-white text-primary">
       <q-tabs no-caps active-color="primary" indicator-color="primary" class="text-grey">
         <q-route-tab to="/" icon="dashboard"/>
         <q-route-tab to="/skills" icon="sym_o_exercise"/>
@@ -25,10 +25,17 @@
 </template>
 
 <script setup>
-
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import LogoSimple from '../components/LogoSimple.vue'
 import ConnectionStatusDialog from '../components/ConnectionStatusDialog.vue'
 
+const bottomBarEnabled = ref(true)
+const route = useRoute()
+
+watch(route, () => {
+  bottomBarEnabled.value = !route.meta.noBottomBar
+})
 </script>
 <style scoped>
 .main-header{
