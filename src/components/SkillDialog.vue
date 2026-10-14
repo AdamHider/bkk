@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="isOpen" transition-show="slide-up" transition-hide="slide-down" maximized="">
-    <div class="column">
+    <div class="bg-white">
     <q-card v-if="skill" style="width: 100%; padding-bottom: 25px;" :class="`bg-${skill.category.color}-4  overflow-hidden rounded-none`">
       <q-card-section class="q-pb-sm">
         <q-item :class="`q-px-sm bg-${skill.category.color}-8 text-white rounded-borders `">
@@ -52,7 +52,7 @@
         </q-card>
     </q-card-section>
   </q-card>
-  <q-card class="rounded-b-none rounded-t-lg" style="flex: 1; margin-top: -75px;  padding-top: 35px;">
+  <q-card class="rounded-b-none rounded-t-lg" flat style="flex: 1; margin-top: -75px;  padding-top: 35px;">
     <q-card-section class="col q-pa-none">
       <q-tab-panels v-model="currentStepIndex" animated swipeable class="bg-transparent full-height">
         <q-tab-panel v-for="(stage, index) in skill.stages" :name="index" :key="stage.id" class="q-pa-md">
