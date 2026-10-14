@@ -100,7 +100,7 @@
                     Как играть?
                   </div>
                 </div>
-                <div>
+                <div style="white-space: pre-line;">
                   {{ activeGame.description }}
                 </div>
               </q-card-section>
@@ -324,7 +324,7 @@ const saveGame = async () => {
 
   const payload = {
     child_id: 1,
-    title: form.value.description,
+    title: form.value.title,
     description: form.value.description,
     prefs: form.value.prefs,
     skills: form.value.skills
